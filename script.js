@@ -5,7 +5,9 @@ class Quiz {
         this.answerButtons = document.getElementById('answer-buttons');
         this.feedback = document.getElementById('feedback');
         this.nextButton = document.getElementById('next-button');
-        this.showQuestion(this.questions[0]);
+        this.currentQuestionIndex = 0;
+        this.showQuestion(this.questions[this.currentQuestionIndex]);
+        this.nextButton.addEventListener('click',() => this.nextQuestion());
     }
 
     showQuestion(question) {
@@ -30,6 +32,7 @@ class Quiz {
             this.nextButton.classList.remove('hide');
             this.feedback.textContent = question.explanation;
             button.classList.add('correct');
+            this.feedback.classList.remove('text-worng');
             this.feedback.classList.add('text-correct');
         } else {
                 button.classList.add('wrong');
@@ -39,9 +42,25 @@ class Quiz {
             }
         }
 
+        nextQuestion() {
+            this.currentQuestionIndex++;
+            this.resetQuestion();
+            if(this.currentQuestionIndex >= this.questions.length) {
+                console.log('Sfarsit Quiz');
+            } else {
+                this.showQuestion(this.questions[this.currentQuestionIndex]);
+            }
+            
+        }
+
+        resetQuestion() {
+            this.feedback.classList.remove('text-correct', 'text-wrong');
+            this.feedback.innerHTML = '';
+            this.nextButton.classList.add('hide');
+
+        }
 
     }
-
 async function initQuiz() {
     const fileContent = await fetch('./questions.json');
         const quizQuestions = await fileContent.json();
